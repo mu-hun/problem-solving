@@ -1,4 +1,4 @@
-class QueueClass():
+class CircularQueue:
 
 	def __init__(self):
 		self.QUEUE_CAPACITY = 8
@@ -24,16 +24,35 @@ class QueueClass():
 		self.queue_size = self.queue_size - 1
 		return self.queue[self.head - 1]
 
-	def main(self):
+
+class NativeQueue:
+	def __init__(self):
+		self.queue = []
+	
+	def enqueue(self, val):
+		self.queue.insert(0, val)
+	
+	def dequeue(self):
+		if self.is_empty():
+			return None
+		else:
+			return self.queue.pop()
+	
+	def size(self):
+		return len(self.queue)
+	def is_empty(self):
+		return self.size() == 0
+
+def main(func):
 		while True:
 			number = int(input("input number: "))
 			if number > 0:
-				self.enqueue(number)
+				func.enqueue(number)
 			elif number == 0:
-				print(self.dequeue())
+				print(func.dequeue())
 			if number < 0:
-				return print(self.queue)
-
+				return print(func.queue)
 
 if __name__ == '__main__':
-	QueueClass().main()
+	main(CircularQueue())
+	# main(NativeQueue())
