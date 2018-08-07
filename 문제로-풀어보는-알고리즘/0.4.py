@@ -20,7 +20,7 @@ class QueueClass():
 		if self.queue_size == 0:
 			print("queue empty!")
 			return
-		self.head += (self.head + 1) % self.QUEUE_CAPACITY
+		self.head = (self.head + 1) % self.QUEUE_CAPACITY
 		self.queue_size = self.queue_size - 1
 		return self.queue[self.head - 1]
 
