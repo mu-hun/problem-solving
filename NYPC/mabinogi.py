@@ -12,7 +12,7 @@ def solve(N, resources):
         return "invalid"
     for i in resources:
         property_list[sample_resource.index(i)] += 1
-    if len(filter(lambda x: if x > 0)) < 4:
+    if len(list(filter(lambda x: if x > 0))) < 4:
         return "valid"
     else:
         return "invalid"
