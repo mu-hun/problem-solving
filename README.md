@@ -1,5 +1,7 @@
 # problem-solving
 
+![jest](https://github.com/x86chi/problem-solving/workflows/jest/badge.svg)
+
 A repository for problem solving.
 
 ## License
