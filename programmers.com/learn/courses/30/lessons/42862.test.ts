@@ -5,7 +5,7 @@ const testCases = [
   [5, [2, 4], [3]],
   [3, [3], [1]],
   [7, [2, 4], [3, 6]]
-]
+] as [number, number[], number[]][]
 
 test(testCases[0].join(' | '), () => {
   expect(solution(...testCases[0])).toBe(5)
