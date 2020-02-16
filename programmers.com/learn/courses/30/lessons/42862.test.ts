@@ -4,7 +4,8 @@ const testCases = [
   [5, [2, 4], [1, 3, 5]],
   [5, [2, 4], [3]],
   [3, [3], [1]],
-  [7, [2, 4], [3, 6]]
+  [7, [2, 4], [3, 6]],
+  [5, [2, 5], [1, 3, 5]]
 ] as [number, number[], number[]][]
 
 test(testCases[0].join(' | '), () => {
@@ -18,4 +19,7 @@ test(testCases[2].join(' | '), () => {
 })
 test(testCases[3].join(' | '), () => {
   expect(solution(...testCases[3])).toBe(6)
+})
+test(testCases[4].join(' | '), () => {
+  expect(solution(...testCases[4])).toBe(5)
 })
