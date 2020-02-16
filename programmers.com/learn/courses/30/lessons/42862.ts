@@ -1,48 +1,12 @@
-const sort = (a: number, b: number) => a - b
+const diff = (a: number[], b: number[]) => a.filter(x => !b.includes(x))
 
-const difference = (setA: Set<number>, setB: Set<number>) => {
-  let _difference = new Set(setA)
-  for (const item of setB) {
-    _difference.delete(item)
-  }
-  return _difference
-}
-
-const getDifference = (_a: number[], _b: number[]) => {
-  const setA = new Set(_a.sort(sort))
-  const setB = new Set(_b.sort(sort))
-
-  return [[...difference(setA, setB)], [...difference(setB, setA)]]
-}
-
-export function solution(n: number, _lost: number[], _reserve: number[]) {
-  let registerable = [...new Array(n + 1).keys()].slice(1)
-  const [lost, reserve] = getDifference(_lost, _reserve)
-
-  for (const lostPerson of lost) {
-    if (
-      !reserve.includes(lostPerson - 1) &&
-      !reserve.includes(lostPerson + 1)
-    ) {
-      registerable.splice(lostPerson - 1, 1)
-      continue
-    }
-
-    if (reserve.includes(lostPerson + 1) && !reserve.includes(lostPerson - 1)) {
-      const target = lostPerson + 1
-      const index = reserve.findIndex(v => v === target)
-
-      reserve.splice(index, 1)
-      continue
-    }
-    if (reserve.includes(lostPerson - 1) && !reserve.includes(lostPerson + 1)) {
-      const target = lostPerson - 1
-      const index = reserve.findIndex(v => v === target)
-
-      reserve.splice(index, 1)
-      continue
-    }
-  }
-
-  return registerable.length
-}
+export const solution = (n: number, lost: number[], reserve: number[]) =>
+  diff(lost, reserve).reduce(
+    ({ attend, spares }, index) => {
+      const target = [index + 1, index - 1].find(x => spares.includes(x))
+      return target
+        ? { attend, spares: spares.filter(spare => target !== spare) }
+        : { attend: attend - 1, spares }
+    },
+    { attend: n, spares: diff(reserve, lost) }
+  ).attend
