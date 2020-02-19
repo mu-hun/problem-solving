@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.8
-        uses: actions/setup-python@v1
+      - uses: actions/setup-python@v1
         with:
           python-version: 3.8
       - name: Test with pytest
@@ -17,9 +17,9 @@ jobs:
           pip install pytest
           pytest programmers.com/learn/courses/30/lessons/*.py
       - uses: borales/actions-yarn@v2.0.0
-      - name: Test with jest
         with:
           cmd: install
+      - name: Test with jest
       - uses: borales/actions-yarn@v2.0.0
         with:
           cmd: test
