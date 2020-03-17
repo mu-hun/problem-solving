@@ -8,19 +8,27 @@ def pre_permutation(a):
     while a[j] >= a[i-1]:
         j -= 1
 
-    a[i-1],a[j] = a[j],a[i-1]
+    a[i-1], a[j] = a[j], a[i-1]
 
     j = len(a)-1
     while i < j:
-        a[i],a[j] = a[j],a[i]
+        a[i], a[j] = a[j], a[i]
         i += 1
         j -= 1
 
-    return True
+    return a
 
-n = int(input())
-a = list(map(int,input().split()))
-if pre_permutation(a):
-    print(' '.join(map(str,a)))
-else:
-    print(-1)
+
+def test_permutation():
+    assert pre_permutation([1, 2, 3, 4]) == False
+    assert pre_permutation([5, 4, 3, 2, 1]) == [5, 4, 3, 1, 2]
+
+
+if __name__ == "__main__":
+    n = int(input())
+    a = list(map(int, input().split()))
+    result = pre_permutation(a)
+    if result:
+        print(*result)
+    else:
+        print(-1)

@@ -27,6 +27,18 @@ def printSnail(N):
     return result
 
 
+def test_snail():
+    expect = [[49, 26, 27, 28, 29, 30, 31],
+              [48, 25, 10, 11, 12, 13, 32],
+              [47, 24, 9, 2, 3, 14, 33],
+              [46, 23, 8, 1, 4, 15, 34],
+              [45, 22, 7, 6, 5, 16, 35],
+              [44, 21, 20, 19, 18, 17, 36],
+              [43, 42, 41, 40, 39, 38, 37]]
+
+    assert printSnail(7) == expect
+
+
 if __name__ == '__main__':
     L = printSnail(int(input()))
     S = int(input())
