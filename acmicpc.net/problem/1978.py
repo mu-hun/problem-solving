@@ -9,6 +9,10 @@ def prime(n):
     return True
 
 
+def test_prime():
+    list(map(prime, [1, 3, 5, 7])).count(True) == 3
+
+
 if __name__ == '__main__':
     input()
     print(list(map(prime, map(int, input().split()))).count(True))

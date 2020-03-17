@@ -8,19 +8,27 @@ def next_permutation(a):
     while a[j] <= a[i-1]:
         j -= 1
 
-    a[i-1],a[j] = a[j],a[i-1]
+    a[i-1], a[j] = a[j], a[i-1]
 
     j = len(a)-1
     while i < j:
-        a[i],a[j] = a[j],a[i]
+        a[i], a[j] = a[j], a[i]
         i += 1
         j -= 1
 
-    return True
+    return a
 
-n = int(input())
-a = list(map(int,input().split()))
-if next_permutation(a):
-    print(' '.join(map(str,a)))
-else:
-    print(-1)
+
+def test_permutation():
+    assert next_permutation([1, 2, 3, 4]) == [1, 2, 4, 3]
+    assert next_permutation([5, 4, 3, 2, 1]) == False
+
+
+if __name__ == "__main__":
+    n = int(input())
+    a = list(map(int, input().split()))
+    result = next_permutation(a)
+    if result:
+        print(*result)
+    else:
+        print(-1)
