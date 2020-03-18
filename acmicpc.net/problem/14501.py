@@ -16,5 +16,5 @@ if __name__ == "__main__":
         go(day+1, s)
         go(day+t[day], s+p[day])
 
-        go(1, 0)
-        print(ans)
+    go(1, 0)
+    print(ans)
