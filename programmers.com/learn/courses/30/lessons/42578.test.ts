@@ -6,7 +6,7 @@ describe('위장', () => {
       solution([
         ['yellow_hat', 'headgear'],
         ['blue_sunglasses', 'eyewear'],
-        ['green_turban', 'headgear']
+        ['green_turban', 'headgear'],
       ])
     ).toBe(5)
   })
@@ -15,7 +15,7 @@ describe('위장', () => {
       solution([
         ['crow_mask', 'face'],
         ['blue_sunglasses', 'face'],
-        ['smoky_makeup', 'face']
+        ['smoky_makeup', 'face'],
       ])
     ).toBe(3)
   })

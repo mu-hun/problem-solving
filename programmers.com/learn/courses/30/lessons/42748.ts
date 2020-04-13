@@ -5,6 +5,6 @@ export const solution = (
   commands: [number, number, number][]
 ) =>
   commands.map(
-    command =>
+    (command) =>
       array.slice(command[0] - 1, command[1]).sort(sort)[command[2] - 1]
   )

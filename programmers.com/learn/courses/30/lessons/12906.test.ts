@@ -2,7 +2,7 @@ import { solution } from './12906'
 
 const testCases = [
   [1, 1, 3, 3, 0, 1, 1],
-  [4, 4, 4, 3, 3]
+  [4, 4, 4, 3, 3],
 ]
 
 describe('같은 숫자는 싫어', () => {

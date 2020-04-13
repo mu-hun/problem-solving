@@ -1,5 +1,6 @@
 export default function solution(n: number) {
   let result: number[] = []
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   for (const _ in [...new Array(n)]) {
     result.push(0)
     result = palindrome(result)

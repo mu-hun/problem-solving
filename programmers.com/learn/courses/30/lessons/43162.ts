@@ -1,5 +1,5 @@
 export default function solution(n: number, computers: number[][]) {
-  let check = [...Array(n)].map(() => false)
+  const check = [...Array(n)].map(() => false)
   function dfs(x: number) {
     check[x] = true
     for (let y = 0; y < n; y++)

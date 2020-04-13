@@ -1,19 +1,23 @@
 const [method, uid, name] = [0, 1, 2] as const
 
-let uid2Name: Record<string, string> = {}
+const uid2Name: Record<string, string> = {}
 
 const isEdit = {
   Enter: true,
   Change: true,
-  Leave: false
+  Leave: false,
 } as const
 
 type message = ['Enter' | 'Change' | 'Leave', string, string]
 
-const inOrOut = { Enter: '들어왔습니다', Leave: '나갔습니다' } as const
+const inOrOut = {
+  Enter: '들어왔습니다',
+  Leave: '나갔습니다',
+  Change: null,
+} as const
 
 export function solution(record: string[]) {
-  let answer: string[] = []
+  const answer: string[] = []
 
   for (const message of record) {
     const splited = message.split(' ') as message
@@ -26,7 +30,6 @@ export function solution(record: string[]) {
 
     if (splited[method] === 'Change') continue
 
-    // @ts-ignore
     answer.push(`${uid2Name[splited[uid]]}님이 ${inOrOut[splited[method]]}.`)
   }
 
