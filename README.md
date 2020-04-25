@@ -2,6 +2,8 @@
 
 ![programmers](https://github.com/x86chi/problem-solving/workflows/programmers/badge.svg)
 ![Baekjoon Online Judge](https://github.com/x86chi/problem-solving/workflows/Baekjoon%20Online%20Judge/badge.svg)
+![HackerRanck](https://github.com/x86chi/problem-solving/workflows/HackerRanck/badge.svg)
+![GeeksforGeeks](https://github.com/x86chi/problem-solving/workflows/GeeksforGeeks/badge.svg)
 
 A repository for problem solving.
 
