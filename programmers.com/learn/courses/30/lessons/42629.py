@@ -1,28 +1,21 @@
+import heapq
+
+
 def solution(stock, dates, supplies, k):
     answer = 0
-    count = 0
-    while count < k:
-        if len(dates) == 0:
-            return answer
+    start = 0
+    heap = []
 
-        stock -= 1
-        count += 1
+    while stock < k:
+        for index in range(start, len(dates)):
+            if stock >= dates[index]:
+                heapq.heappush(heap, -supplies[index])
+                start = index+1
+                continue
+            break
 
-        dates_left = list(map(lambda date: date - count, dates))
-
-        for index in range(len(dates_left)):
-            if stock < dates_left[index]:
-                stock += supplies[index-1]
-                dates = dates[index:]
-                supplies = supplies[index:]
-                answer += 1
-                break
-            if stock == dates_left[index]:
-                stock += supplies[index]
-                dates = dates[index+1:]
-                supplies = supplies[index+1:]
-                answer += 1
-                break
+        stock += heapq.heappop(heap) * -1
+        answer += 1
     return answer
 
 
