@@ -19,7 +19,7 @@ def substringCount(s: str, k: int):
             counts[char] += 1
             if counts[char] > k:
                 break
-            if counts[char] == k and check(s[i:j+1]):
+            if counts[char] == k and check(counts) == True:
                 answer += 1
     return answer
 
