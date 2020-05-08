@@ -4,24 +4,24 @@ def substringCount(s: str, k: int):
     MAX_CHAR = max(map(lambda char: ord(char) - A, set(list(s)))) + 1
 
     length = len(s)
-    answer = 0
+    count = 0
 
     def check(freq):
         for count in freq:
-            if count and count != k:
+            if count > 0 and count != k:
                 return False
         return True
 
     for i in range(length):
-        counts = [0]*MAX_CHAR
+        freq = [0] * MAX_CHAR
         for j in range(i, length):
-            char = ord(s[j]) - A
-            counts[char] += 1
-            if counts[char] > k:
+            index = ord(s[j]) - A
+            freq[index] += 1
+            if freq[index] > k:
                 break
-            if counts[char] == k and check(counts) == True:
-                answer += 1
-    return answer
+            if freq[index] == k and check(freq) == True:
+                count += 1
+    return count
 
 
 def test_substring():
