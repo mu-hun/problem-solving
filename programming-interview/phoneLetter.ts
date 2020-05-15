@@ -34,18 +34,28 @@ export function toNumberArray(number: number) {
 }
 
 export function combination(n: number, k: number) {
+  const s = new Array<number>(n).fill(0)
   const result: number[][] = []
-  function go(index: number, set: number[]) {
-    if (index === n) {
-      result.push(set)
-      return
-    }
-    for (let i = 0; i < k; i++) {
-      go(index + 1, [...set, i])
+
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    result.push([...s])
+
+    for (let i = n - 1; i >= -1; i--) {
+      if (i === -1) return result
+      if (s[i] === k - 1) {
+        s[i] = 0
+        continue
+      }
+      let isBreak = false
+      for (let j = 0; j < k - 1; j++) {
+        if (s[i] === j) {
+          s[i] = j + 1
+          isBreak = true
+          break
+        }
+      }
+      if (isBreak === true) break
     }
   }
-
-  go(0, [])
-
-  return result
 }
