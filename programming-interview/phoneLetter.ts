@@ -47,15 +47,8 @@ export function combination(n: number, k: number) {
         s[i] = 0
         continue
       }
-      let isBreak = false
-      for (let j = 0; j < k - 1; j++) {
-        if (s[i] === j) {
-          s[i] = j + 1
-          isBreak = true
-          break
-        }
-      }
-      if (isBreak === true) break
+      s[i] += 1
+      break
     }
   }
 }
