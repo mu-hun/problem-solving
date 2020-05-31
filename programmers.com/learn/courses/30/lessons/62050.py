@@ -1,0 +1,132 @@
+from collections import deque
+
+NEXT_X = [0, 0, -1, 1]
+NEXT_Y = [1, -1, 0, 0]
+
+MAX = 10000
+
+
+def solution(land, height):
+    matrix = make_graph(land, *label_tag(1, land))
+
+    N = len(matrix)
+    # hack: UnboundLocalError
+    answer = [MAX]
+
+    def dfs(x: int, count: int, visit: list):
+        for i in range(N):
+            if len(visit) == 3:
+                answer[0] = min(answer[0], count)
+            if matrix[x][i] != MAX and x not in visit:
+                dfs(i, count + matrix[x][i], [*visit, x])
+
+    for x in range(N):
+        dfs(x, 0, [])
+    return answer[0]
+
+
+def make_graph(square: list, group: list, count: int):
+    N = len(group)
+    matrix = [[MAX+1]*count for __ in range(count)]
+    visit = [[False]*N for __ in range(N)]
+
+    def bfs(y, x):
+        visit[y][x] = True
+
+        queue = deque()
+        queue.append((y, x))
+        while queue:
+            y, x = queue.popleft()
+            for i in range(4):
+                _y, _x = y+NEXT_Y[i], x+NEXT_X[i]
+                if 0 <= _x < N and 0 <= _y < N and group[y][x] != group[_y][_x]:
+                    matrix[group[y][x]-1][group[_y][_x]-1] = min(
+                        matrix[group[y][x]-1][group[_y][_x]-1], abs(square[y][x] - square[_y][_x]))
+
+    for x in range(N):
+        for y in range(N):
+            if visit[y][x] == False:
+                bfs(y, x)
+    return matrix
+
+
+def label_tag(height: int, square: list):
+    N = len(square)
+
+    count = 0
+    group = [[0]*N for __ in range(N)]
+
+    def bfs(y, x, count):
+        queue = deque()
+        queue.append((y, x))
+        group[y][x] = count
+        while queue:
+            y, x = queue.popleft()
+            for i in range(4):
+                _y, _x = y+NEXT_Y[i], x+NEXT_X[i]
+                if 0 <= _x < N and 0 <= _y < N and abs(square[y][x] - square[_y][_x]) <= height and group[_y][_x] == 0:
+                    group[_y][_x] = count
+                    queue.append((_y, _x))
+
+    for x in range(N):
+        for y in range(N):
+            if group[y][x] == 0:
+                count += 1
+                bfs(y, x, count)
+    return group, count
+
+
+cases = {
+    'square': [
+        [[1, 4, 8, 10],
+         [5, 5, 5, 5],
+         [10, 10, 10, 10],
+         [10, 10, 10, 20]],
+
+        [[10, 11, 10, 11],
+         [2, 21, 20, 10],
+         [1, 20, 21, 11],
+         [2, 1, 2, 1]]
+    ],
+    'grouped': [
+        [[1, 1, 1, 1],
+         [1, 1, 1, 1],
+         [2, 2, 2, 2],
+         [2, 2, 2, 3]],
+
+        [[1, 1, 1, 1],
+         [2, 3, 3, 1],
+         [2, 3, 3, 1],
+         [2, 2, 2, 2]]
+    ],
+    'height': [3, 1],
+    'count': [3, 3],
+}
+
+
+def test_label_tag():
+    grouped, count = label_tag(cases['height'][0], cases['square'][0])
+
+    assert grouped == cases['grouped'][0]
+    assert count == cases['count'][0]
+
+    grouped, count = label_tag(cases['height'][1], cases['square'][1])
+
+    assert grouped == cases['grouped'][1]
+    assert count == cases['count'][1]
+
+
+def test_make_graph():
+    NONE = MAX+1
+    graph = make_graph(cases['square'][0],
+                       cases['grouped'][0], cases['count'][0])
+    assert graph == [[NONE, 5, NONE], [5, NONE, 10], [NONE, 10, NONE]]
+
+    graph = make_graph(cases['square'][1],
+                       cases['grouped'][1], cases['count'][1])
+    assert graph == [[NONE, 8, 10], [8, NONE, 19], [10, 19, NONE]]
+
+
+def test_solution():
+    assert solution(cases['square'][0], cases['height'][0]) == 15
+    assert solution(cases['square'][1], cases['height'][1]) == 18
