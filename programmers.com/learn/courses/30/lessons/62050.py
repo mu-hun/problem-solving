@@ -10,19 +10,22 @@ def solution(land, height):
     matrix = make_graph(land, *label_tag(1, land))
 
     N = len(matrix)
-    # hack: UnboundLocalError
-    answer = [MAX]
+    answer = MAX
 
-    def dfs(x: int, count: int, visit: list):
-        for i in range(N):
-            if len(visit) == 3:
-                answer[0] = min(answer[0], count)
-            if matrix[x][i] != MAX and x not in visit:
-                dfs(i, count + matrix[x][i], [*visit, x])
+    def dfs(x: int, count: int, visits: list):
+        if len(visits) == N-1:
+            return min(answer, count)
+
+        nextIndex = x
+        for index in range(N):
+            if not index in visits and matrix[x][nextIndex] > matrix[x][index]:
+                nextIndex = index
+
+        return dfs(nextIndex, count + matrix[x][nextIndex], [*visits, x])
 
     for x in range(N):
-        dfs(x, 0, [])
-    return answer[0]
+        answer = min(answer, dfs(x, 0, []))
+    return answer
 
 
 def make_graph(square: list, group: list, count: int):
