@@ -4,10 +4,11 @@ NEXT_X = [0, 0, -1, 1]
 NEXT_Y = [1, -1, 0, 0]
 
 MAX = 10000
+NONE = MAX + 1
 
 
 def solution(land, height):
-    matrix = make_graph(land, *label_tag(1, land))
+    matrix = make_matrix(land, *label_tag(1, land))
 
     N = len(matrix)
     answer = MAX
@@ -28,7 +29,21 @@ def solution(land, height):
     return answer
 
 
-def make_graph(square: list, group: list, count: int):
+def matrix_to_edge_list(matrix: list):
+    result = []
+    length = len(matrix)
+    visit_matrix = [[False]*length for __ in range(length)]
+
+    for x in range(length):
+        for y in range(length):
+            if matrix[x][y] != NONE and visit_matrix[x][y] == False and visit_matrix[y][x] == False:
+                visit_matrix[x][y] = True
+                result.append((x, y, matrix[x][y]))
+
+    return result
+
+
+def make_matrix(square: list, group: list, count: int):
     N = len(group)
     matrix = [[MAX+1]*count for __ in range(count)]
     visit = [[False]*N for __ in range(N)]
@@ -119,15 +134,22 @@ def test_label_tag():
     assert count == cases['count'][1]
 
 
-def test_make_graph():
-    NONE = MAX+1
-    graph = make_graph(cases['square'][0],
-                       cases['grouped'][0], cases['count'][0])
+def test_make_matrix():
+
+    graph = make_matrix(cases['square'][0],
+                        cases['grouped'][0], cases['count'][0])
     assert graph == [[NONE, 5, NONE], [5, NONE, 10], [NONE, 10, NONE]]
 
-    graph = make_graph(cases['square'][1],
-                       cases['grouped'][1], cases['count'][1])
+    graph = make_matrix(cases['square'][1],
+                        cases['grouped'][1], cases['count'][1])
     assert graph == [[NONE, 8, 10], [8, NONE, 19], [10, 19, NONE]]
+
+
+def test_matrix_to_edge_list():
+    matrix_to_edge_list([[NONE, 8, 10], [8, NONE, 19], [10, 19, NONE]]) == [
+        (0, 1, 8), (0, 2, 10), (1, 2, 19)]
+    matrix_to_edge_list([[NONE, 5, NONE], [5, NONE, 10], [
+                        NONE, 10, NONE]]) == [(0, 1, 5), (1, 2, 10)]
 
 
 def test_solution():
