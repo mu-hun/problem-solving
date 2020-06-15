@@ -9,23 +9,32 @@ NONE = MAX + 1
 
 def solution(land, height):
     matrix = make_matrix(land, *label_tag(1, land))
+    edges = matrix_to_edge_list(matrix)
 
-    N = len(matrix)
-    answer = MAX
+    edges.sort(key=lambda item: item[2])
 
-    def dfs(x: int, count: int, visits: list):
-        if len(visits) == N-1:
-            return min(answer, count)
+    link = [i for i in range(len(edges))]
 
-        nextIndex = x
-        for index in range(N):
-            if not index in visits and matrix[x][nextIndex] > matrix[x][index]:
-                nextIndex = index
+    def find(x: int):
+        if x == link[x]:
+            return x
+        link[x] = find(link[x])
+        return link[x]
 
-        return dfs(nextIndex, count + matrix[x][nextIndex], [*visits, x])
+    def same(a: int, b: int):
+        return find(a) == find(b)
 
-    for x in range(N):
-        answer = min(answer, dfs(x, 0, []))
+    def unite(a: int, b: int):
+        a = find(a)
+        b = find(b)
+        link[a] = b
+
+    answer = 0
+    for edge in edges:
+        if not same(edge[0], edge[1]):
+            unite(edge[0], edge[1])
+            answer += edge[2]
+
     return answer
 
 
