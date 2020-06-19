@@ -4,8 +4,7 @@ def calculate_max_profit(length, prices):
         max_profit = 0
         for second in range(first+1, length):
             max_profit = max(max_profit, prices[second] - prices[first])
-        if max_profit > 0:
-            accumulate += max_profit
+        accumulate += max_profit
     return accumulate
 
 
