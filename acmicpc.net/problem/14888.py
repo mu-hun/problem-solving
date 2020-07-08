@@ -2,27 +2,28 @@ from typing import List, Tuple
 
 
 def solution(A: List[int], operators: Tuple[int, int, int, int]):
-    results = []
-
     def calc(A: List[int], index: int, current: int, plus: int, minus: int, mul: int, div: int):
         if index == len(A):
-            results.append(current)
-            return
+            return (current, current)
+        result = []
         if plus > 0:
-            calc(A, index+1, current+A[index], plus-1, minus, mul, div)
+            result.append(
+                calc(A, index+1, current+A[index], plus-1, minus, mul, div))
         if minus > 0:
-            calc(A, index+1, current-A[index], plus, minus-1, mul, div)
+            result.append(calc(A, index+1, current -
+                               A[index], plus, minus-1, mul, div))
         if mul > 0:
-            calc(A, index+1, current*A[index], plus, minus, mul-1, div)
+            result.append(calc(A, index+1, current *
+                               A[index], plus, minus, mul-1, div))
         if div > 0:
             if current >= 0:
-                calc(A, index+1, current //
-                     A[index], plus, minus, mul, div-1)
+                result.append(calc(A, index+1, current //
+                                   A[index], plus, minus, mul, div-1))
             else:
-                calc(A, index+1, -(-current //
-                                   A[index]), plus, minus, mul, div-1)
-    calc(A, 1, A[0], *operators)
-    return (max(results), min(results))
+                result.append(calc(A, index+1, -(-current //
+                                                 A[index]), plus, minus, mul, div-1))
+        return (max([item[0] for item in result]), min([item[1] for item in result]))
+    return calc(A, 1, A[0], *operators)
 
 
 def test_calc():
