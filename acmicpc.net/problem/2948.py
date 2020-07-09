@@ -5,7 +5,7 @@ weeks = ['Monday', 'Tuesday', 'Wednesday',
 
 
 def solution(M: int, D: int):
-    return weeks[date(2009, M, D).weekday()]
+    return weeks[date(2009, D, M).weekday()]
 
 
 def test_solution():
