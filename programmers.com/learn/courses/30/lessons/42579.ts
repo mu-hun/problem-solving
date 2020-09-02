@@ -1,41 +1,34 @@
-type ReducedItem = { index: number; play: number }
-
-type Reduced = Record<string, ReducedItem[]>
-
-export const reducer = (genres: string[], plays: number[]) =>
-  genres.reduce((pre, curr, index) => {
-    const append = { index, play: plays[index] }
-    pre[curr] ? pre[curr].push(append) : (pre[curr] = [append])
-    return pre
-  }, {} as Reduced)
-
-const sortByPlay = (items: ReducedItem[]) =>
-  items.sort((a, b) => a.play - b.play).reverse()
-
-const reducerSort = (items: Reduced) =>
-  Object.entries(items).reduce((pre, curr) => {
-    pre[curr[0]] = sortByPlay(curr[1])
-    return pre
-  }, {} as Reduced)
-
-const accReducer = (items: Reduced) =>
-  Object.keys(items).reduce((pre, curr) => {
-    pre[curr] = acc(items[curr])
-    return pre
-  }, {} as Record<string, number>)
-
-const acc = (reduced: ReducedItem[]) => reduced.reduce((a, b) => a + b.play, 0)
+interface Item {
+  playCount: number
+  index: number
+}
 
 export default function solution(genres: string[], plays: number[]) {
-  const reduced = reducer(genres, plays)
-  const sorted = reducerSort(reduced)
+  const reduced = genres.reduce((toReduce, key, index) => {
+    const toPush = { playCount: plays[index], index }
+    toReduce[key] ? toReduce[key].push(toPush) : (toReduce[key] = [toPush])
 
-  const accmulated = accReducer(sorted)
-  const sortedKeys = Object.keys(accmulated).sort(
-    (a, b) => accmulated[b] - accmulated[a]
+    return toReduce
+  }, {} as Record<string, Item[]>)
+
+  for (const key of Object.keys(reduced)) {
+    reduced[key].sort((a, b) => {
+      const calculated = b.playCount - a.playCount
+      if (calculated === 0) return a.index - b.index
+      return calculated
+    })
+  }
+
+  const genreKeys = Object.keys(reduced).sort(
+    (alice, bob) =>
+      reduced[bob].reduce((acc, item) => acc + item.playCount, 0) -
+      reduced[alice].reduce((acc, item) => acc + item.playCount, 0)
   )
 
-  return sortedKeys
-    .map(key => sorted[key].slice(0, 2).map(v => v.index))
-    .reduce((acc, val) => acc.concat(val), [] as number[])
+  return (
+    genreKeys
+      .map(genre => reduced[genre].slice(0, 2).map(item => item.index))
+      //@ts-ignore
+      .flat() as number[]
+  )
 }

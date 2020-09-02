@@ -1,4 +1,4 @@
-import solution, { reducer } from './42579'
+import solution from './42579'
 
 describe('베스트앨범', () => {
   test('one', () => {
@@ -9,25 +9,12 @@ describe('베스트앨범', () => {
       )
     ).toStrictEqual([4, 1, 3, 0])
   })
-})
-
-describe('sub methods', () => {
-  test('reducer', () => {
+  test('가장 많이 재생된 장르', () => {
     expect(
-      reducer(
+      solution(
         ['classic', 'pop', 'classic', 'classic', 'pop'],
-        [500, 600, 150, 800, 2500]
+        [500, 600, 501, 800, 900]
       )
-    ).toStrictEqual({
-      classic: [
-        { play: 500, index: 0 },
-        { play: 150, index: 2 },
-        { play: 800, index: 3 }
-      ],
-      pop: [
-        { play: 600, index: 1 },
-        { play: 2500, index: 4 }
-      ]
-    })
+    ).toStrictEqual([3, 2, 4, 1])
   })
 })
