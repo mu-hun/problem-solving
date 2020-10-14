@@ -13,4 +13,4 @@ jobs:
       - name: Install dependencies
         run: yarn
       - name: Run test
-        run: yarn test programming-interview/**/*.test.ts
+        run: yarn test programming-interview/*.test.ts
