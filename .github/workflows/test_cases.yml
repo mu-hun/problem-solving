@@ -1,0 +1,41 @@
+name: Test Cases
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+      - name: Install Node dependencies
+        run: yarn
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - name: Install pytest
+        run: pip install pytest
+
+      - name: Test programmers
+        run: |
+          yarn test programmers.com
+          pytest programmers.com/learn/courses/30/lessons/*.py
+
+      - name: Test Baekjoon Online Judge
+        run: pytest acmicpc.net/problem/*.py
+
+      - name: Test GeeksforGeeks
+        run: |
+          yarn test geeksforgeeks
+          pytest geeksforgeeks/*.py
+
+      - name: Test HackerRank
+        run: pytest hackerrank/*.py
+
+      - name: Test programming Interview
+        run: yarn test programming-interview/*.test.ts
