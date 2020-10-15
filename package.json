@@ -3,10 +3,6 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
-  "scripts": {
-    "start": "ts-node --",
-    "test": "jest"
-  },
   "devDependencies": {
     "@types/jest": "^24.0.25",
     "@types/node": "^13.1.1",

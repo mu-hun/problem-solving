@@ -23,7 +23,7 @@ jobs:
 
       - name: Test programmers
         run: |
-          yarn test programmers.com
+          yarn jest programmers.com
           pytest programmers.com/learn/courses/30/lessons/*.py
 
       - name: Test Baekjoon Online Judge
@@ -31,11 +31,11 @@ jobs:
 
       - name: Test GeeksforGeeks
         run: |
-          yarn test geeksforgeeks
+          yarn jest geeksforgeeks
           pytest geeksforgeeks/*.py
 
       - name: Test HackerRank
         run: pytest hackerrank/*.py
 
       - name: Test programming Interview
-        run: yarn test programming-interview/*.test.ts
+        run: yarn jest programming-interview/*.test.ts
