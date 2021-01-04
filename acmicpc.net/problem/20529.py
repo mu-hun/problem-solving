@@ -27,9 +27,13 @@ def test_sample():
 
 
 def test_maximum():
+    from utils import check_time_limit
+    wrapped = check_time_limit(main, 2)
+
     all_cases = ['ISTJ', 'ISFJ', 'INFJ', 'INTJ', 'ISTP', 'ISFP', 'INFP',
                  'INTP', 'ESTP', 'ESFP', 'ENFP', 'ENTP', 'ESTJ', 'ESFJ', 'ENFJ', 'ENTJ']
-    assert main(all_cases * 6250) == 0
+
+    assert wrapped(all_cases * 2) == 2
 
 
 if __name__ == "__main__":
