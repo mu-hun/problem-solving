@@ -17,20 +17,20 @@ def make_graph(lines: List[Tuple[int, int]]):
 
 
 def parse_tree_paths(paths: Dict[int, set]):
-    tree_nodes, cycle_nodes = [], []
+    tree_nodes, cycle_nodes = {}, {}
     for key in paths:
         if len(paths[key]) == 1:
-            tree_nodes.append(key)
+            tree_nodes[key] = True
         else:
-            cycle_nodes.append(key)
+            cycle_nodes[key] = True
 
     border_nodes = tuple(
-        filter(lambda a: len(list(filter(lambda b: b in tree_nodes, paths[a]))) > 0, cycle_nodes))
+        filter(lambda a: len(list(filter(lambda b: tree_nodes.get(b), paths[a]))) > 0, cycle_nodes.keys()))
 
     def tree_recorder(b: int):
         recording = []
         next_node = b
-        while next_node in tree_nodes:
+        while tree_nodes.get(next_node):
             if len(paths[next_node]) != 1:
                 raise ValueError('It is not Tree')
             recording.append(next_node)
@@ -40,7 +40,7 @@ def parse_tree_paths(paths: Dict[int, set]):
     tree_paths = []
 
     for border_node in border_nodes:
-        for b in filter(lambda node: node in tree_nodes, paths[border_node]):
+        for b in filter(lambda node: tree_nodes.get(node), paths[border_node]):
             tree_paths.append((border_node, *tree_recorder(b)))
 
     return tuple(tree_paths)
@@ -69,18 +69,21 @@ def test_parse_tree_paths():
 
 def test_is_in_same_tree():
     assert is_in_same_tree(parsed_tree_paths, 2, 4) == True
-    assert is_in_same_tree(parsed_tree_paths, 2, 5) == True
+    assert is_in_same_tree(parsed_tree_paths, 4, 5) == True
 
 
 if __name__ == "__main__":
-    def split_line_input(): return map(int, input().split())
+    from sys import stdin
+    def split_line_input(): return map(int, stdin.readline().split())
 
     N, Q = split_line_input()
     paths = [tuple(split_line_input()) for __ in range(N)]
     queries = [tuple(split_line_input()) for __ in range(Q)]
 
+    parsed = parse_tree_paths(make_graph(paths))
+
     for query in queries:
-        if is_in_same_tree(parse_tree_paths(make_graph(paths)), *query):
+        if is_in_same_tree(parsed, *query):
             print(1)
         else:
             print(2)
