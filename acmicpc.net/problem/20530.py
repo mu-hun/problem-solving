@@ -5,11 +5,11 @@ def make_graph(lines: List[Tuple[int, int]]):
     paths: dict[int, set] = {}
     for line in lines:
         A, B = line
-        if (paths.get(A)):
+        if paths.get(A):
             paths[A].add(B)
         else:
             paths[A] = {B}
-        if (paths.get(B)):
+        if paths.get(B):
             paths[B].add(A)
         else:
             paths[B] = {A}
