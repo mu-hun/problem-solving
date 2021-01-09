@@ -1,7 +1,12 @@
 from typing import List, Tuple, Dict
 
+from itertools import chain
 
-def make_graph(lines: List[Tuple[int, int]]):
+Path = Tuple[int, int]
+Query = Path
+
+
+def make_graph(lines: List[Path]):
     paths: dict[int, set] = {}
     for line in lines:
         A, B = line
@@ -16,7 +21,7 @@ def make_graph(lines: List[Tuple[int, int]]):
     return paths
 
 
-def parse_tree_paths(paths: Dict[int, set]):
+def query(paths: Dict[int, set], queries: List[Query]):
     tree_nodes, cycle_nodes = {}, {}
     for key in paths:
         if len(paths[key]) == 1:
@@ -31,26 +36,29 @@ def parse_tree_paths(paths: Dict[int, set]):
         recording = []
         next_node = b
         while tree_nodes.get(next_node):
-            if len(paths[next_node]) != 1:
-                raise ValueError('It is not Tree')
             recording.append(next_node)
             next_node = tuple(paths[next_node])[0]
         return recording
 
-    tree_paths = []
-
+    branchs = {}
     for border_node in border_nodes:
-        for b in filter(lambda node: tree_nodes.get(node), paths[border_node]):
-            tree_paths.append((border_node, *tree_recorder(b)))
+        branchs[border_node] = tuple(chain.from_iterable(map(tree_recorder, filter(
+            lambda node: tree_nodes.get(node), paths[border_node]))))
 
-    return tuple(tree_paths)
-
-
-def is_in_same_tree(paths: Tuple[tuple], a: int, b: int):
-    for path in paths:
-        if (a in path) and (b in path):
+    def go(query: Query):
+        node, goal = query
+        if node == goal:
             return True
-    return False
+
+        if len(paths[node]) == 1:
+            return go((tuple(paths[node])[0], goal))
+
+        if not branchs.get(node):
+            return False
+
+        return goal in branchs[node]
+
+    return tuple(map(go, queries))
 
 
 sample_paths = {
@@ -63,13 +71,8 @@ def test_make_graph():
                        (3, 6), (3, 7), (2, 3)]) == sample_paths
 
 
-def test_parse_tree_paths():
-    assert parse_tree_paths(sample_paths) == parsed_tree_paths
-
-
-def test_is_in_same_tree():
-    assert is_in_same_tree(parsed_tree_paths, 2, 4) == True
-    assert is_in_same_tree(parsed_tree_paths, 4, 5) == True
+def test_query():
+    assert query(sample_paths, [(2, 4), (4, 5), (1, 4)]) == (True, True, False)
 
 
 if __name__ == "__main__":
@@ -80,10 +83,7 @@ if __name__ == "__main__":
     paths = [tuple(split_line_input()) for __ in range(N)]
     queries = [tuple(split_line_input()) for __ in range(Q)]
 
-    parsed = parse_tree_paths(make_graph(paths))
+    results = query(make_graph(paths), queries)
 
-    for query in queries:
-        if is_in_same_tree(parsed, *query):
-            print(1)
-        else:
-            print(2)
+    for result in results:
+        print({True: 1, False: 2}[result])
