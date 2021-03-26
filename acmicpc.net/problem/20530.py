@@ -1,12 +1,13 @@
-from typing import List, Tuple, Dict
+from typing import Set, Tuple, Dict
 
-from itertools import chain
+from copy import deepcopy
 
 Path = Tuple[int, int]
+Paths = Dict[int, Set[int]]
 Query = Path
 
 
-def make_graph(lines: List[Path]):
+def make_graph(lines: Tuple[Path]):
     paths: dict[int, set] = {}
     for line in lines:
         A, B = line
@@ -21,58 +22,116 @@ def make_graph(lines: List[Path]):
     return paths
 
 
-def query(paths: Dict[int, set], queries: List[Query]):
-    tree_nodes, cycle_nodes = {}, {}
-    for key in paths:
-        if len(paths[key]) == 1:
-            tree_nodes[key] = True
-        else:
-            cycle_nodes[key] = True
+def filter_cycle_path(_paths: Paths):
+    def is_only_have_cycle():
+        for nodes in paths.values():
+            if (len(nodes) == 1):
+                return False
+        return True
 
-    border_nodes = tuple(
-        filter(lambda a: len(list(filter(lambda b: tree_nodes.get(b), paths[a]))) > 0, cycle_nodes.keys()))
+    paths = deepcopy(_paths)
 
-    def tree_recorder(b: int):
-        recording = []
-        next_node = b
-        while tree_nodes.get(next_node):
-            recording.append(next_node)
-            next_node = tuple(paths[next_node])[0]
-        return recording
+    while (not is_only_have_cycle()):
+        for key in list(paths):
+            if (len(paths[key]) == 1):
+                leaf_parent_nodes = paths.pop(key)
+                for node in leaf_parent_nodes:
+                    paths[node].remove(key)
+    return paths
 
-    branchs = {}
-    for border_node in border_nodes:
-        branchs[border_node] = tuple(chain.from_iterable(map(tree_recorder, filter(
-            lambda node: tree_nodes.get(node), paths[border_node]))))
 
+def filter_tree_path(_paths: Paths, cycle_path: Paths):
+    paths = deepcopy(_paths)
+    keys = tuple(cycle_path)
+
+    for key in keys:
+        if cycle_path.get(key):
+            difference = paths[key].difference(cycle_path[key])
+            if len(difference) > 0:
+                paths[key] = difference
+            else:
+                paths.pop(key)
+    return paths
+
+
+def is_in_same_tree(cycle_nodes: Tuple[int], tree_path: Paths, queries: Tuple[Query]) -> Tuple[bool]:
     def go(query: Query):
-        node, goal = query
-        if node == goal:
-            return True
+        start, end = query
 
-        if len(paths[node]) == 1:
-            return go((tuple(paths[node])[0], goal))
-
-        if not branchs.get(node):
+        in_cycle = start in cycle_nodes and end in cycle_nodes
+        if in_cycle:
             return False
 
-        return goal in branchs[node]
+        def search(cursor: int, history: Tuple[int]):
+            if cursor == end:
+                return True
+
+            if not cursor in tree_path:
+                return False
+
+            for node in tree_path[cursor]:
+                if node in history:
+                    continue
+                return search(node, (*history, node))
+
+            # 시작과 끝 노드 중에 하나가 사이클 노드이다.
+            return False
+
+        return search(start, (start,))
 
     return tuple(map(go, queries))
 
 
-sample_paths = {
-    1: {2, 3}, 2: {1, 4, 5, 3}, 3: {1, 6, 7, 2}, 4: {2}, 5: {2}, 6: {3}, 7: {3}}
-parsed_tree_paths = ((2, 4), (2, 5), (3, 6), (3, 7))
+test_cases = [
+    {
+        "raw_paths": ((1, 2), (1, 3), (2, 4), (2, 5), (3, 6), (3, 7), (2, 3)),
+        "paths": {1: {2, 3}, 2: {1, 4, 5, 3}, 3: {1, 6, 7, 2}, 4: {2}, 5: {2}, 6: {3}, 7: {3}},
+        "cycle_path": {1: {2, 3}, 2: {1, 3}, 3: {1, 2}},
+        "tree_path": {2: {4, 5}, 3: {6, 7}, 4: {2}, 5: {2}, 6: {3}, 7: {3}},
+        "queries": ((2, 4), (4, 5), (1, 4), (6, 2)),
+        "result": (True, True, False, False)
+    },
+    {
+        "raw_paths": ((1, 2), (1, 3), (2, 4), (2, 5), (3, 6), (3, 7), (2, 3), (4, 8), (4, 9), (3, 6), (3, 7)),
+        "paths": {1: {2, 3}, 2: {1, 4, 5, 3}, 3: {1, 6, 7, 2}, 4: {2, 8, 9}, 5: {2}, 6: {3}, 7: {3}, 8: {4}, 9: {4}},
+        "cycle_path": {1: {2, 3}, 2: {1, 3}, 3: {1, 2}},
+        "tree_path": {2: {4, 5}, 3: {6, 7}, 4: {2, 8, 9}, 5: {2}, 6: {3}, 7: {3}, 8: {4}, 9: {4}},
+        "queries": ((2, 4), (2, 8), (9, 8), (5, 8)),
+        "result": (True, True, True, True)
+    },
+]
 
 
 def test_make_graph():
-    assert make_graph([(1, 2), (1, 3), (2, 4), (2, 5),
-                       (3, 6), (3, 7), (2, 3)]) == sample_paths
+    for test_case in test_cases:
+        raw_paths = test_case["raw_paths"]
+        paths = test_case["paths"]
+        assert make_graph(raw_paths) == paths
 
 
-def test_query():
-    assert query(sample_paths, [(2, 4), (4, 5), (1, 4)]) == (True, True, False)
+def test_filter_cycle_path():
+    for test_case in test_cases:
+        paths = test_case["paths"]
+        cycle_path = test_case["cycle_path"]
+        assert filter_cycle_path(paths) == cycle_path
+
+
+def test_filter_tree_path():
+    for test_case in test_cases:
+        paths = test_case["paths"]
+        cycle_path = test_case["cycle_path"]
+        tree_path = test_case["tree_path"]
+        assert filter_tree_path(paths, cycle_path) == tree_path
+
+
+def test_is_in_same_tree():
+    for test_case in test_cases:
+        cycle_nodes = tuple(test_case["cycle_path"].keys())
+        tree_path = test_case["tree_path"]
+        queries = test_case["queries"]
+        result = test_case["result"]
+        assert is_in_same_tree(cycle_nodes, tree_path,
+                               queries) == result
 
 
 if __name__ == "__main__":
@@ -80,10 +139,14 @@ if __name__ == "__main__":
     def split_line_input(): return map(int, stdin.readline().split())
 
     N, Q = split_line_input()
-    paths = [tuple(split_line_input()) for __ in range(N)]
-    queries = [tuple(split_line_input()) for __ in range(Q)]
+    raw_paths = tuple(tuple(split_line_input()) for __ in range(N))
+    queries = tuple(tuple(split_line_input()) for __ in range(Q))
 
-    results = query(make_graph(paths), queries)
+    paths = make_graph(raw_paths)
+    cycle_path = filter_cycle_path(paths)
+    tree_path = filter_tree_path(paths, cycle_path)
+
+    results = is_in_same_tree(tuple(cycle_path.keys()), tree_path, queries)
 
     for result in results:
         print({True: 1, False: 2}[result])
