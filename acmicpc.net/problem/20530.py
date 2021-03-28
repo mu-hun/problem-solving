@@ -23,17 +23,19 @@ def make_graph(lines: Tuple[Path]):
 
 
 def filter_cycle_path(_paths: Paths):
-    def is_only_have_cycle():
-        for nodes in paths.values():
-            if (len(nodes) == 1):
-                return False
-        return True
-
     paths = deepcopy(_paths)
 
-    while (not is_only_have_cycle()):
+    is_tree_path = True
+
+    while (is_tree_path):
+        is_tree_path = False
+
         for key in list(paths):
-            if (len(paths[key]) == 1):
+            nodes = paths[key]
+
+            if len(nodes) == 1:
+                is_tree_path = True
+
                 leaf_parent_nodes = paths.pop(key)
                 for node in leaf_parent_nodes:
                     paths[node].remove(key)
