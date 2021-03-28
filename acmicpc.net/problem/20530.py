@@ -127,13 +127,18 @@ def test_filter_tree_path():
 
 
 def test_is_in_same_tree():
+    from utils import check_time_limit
+    wrapped = check_time_limit(is_in_same_tree, 1)
+
     for test_case in test_cases:
         cycle_nodes = tuple(test_case["cycle_path"].keys())
         tree_path = test_case["tree_path"]
+
         queries = test_case["queries"]
+        queries = queries * (200000 - len(queries))
+
         result = test_case["result"]
-        assert is_in_same_tree(cycle_nodes, tree_path,
-                               queries) == result
+        assert wrapped(cycle_nodes, tree_path, queries) == result
 
 
 if __name__ == "__main__":
