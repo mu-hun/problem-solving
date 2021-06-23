@@ -1,13 +1,12 @@
 from typing import List
 
 
-def resetCheck(length):
-    return [False]*length
-
-
 def solution(graph: List[List[int]], start: int):
     length = len(graph)
     answer = {'DFS': [], 'BFS': []}
+
+    def resetCheck():
+        return [False]*length
 
     def DFS(x: int):
         answer['DFS'].append(x)
@@ -16,7 +15,7 @@ def solution(graph: List[List[int]], start: int):
             if not check[y]:
                 DFS(y)
 
-    check = resetCheck(length)
+    check = resetCheck()
     DFS(start)
 
     def BFS(start: int):
@@ -34,7 +33,7 @@ def solution(graph: List[List[int]], start: int):
                     check[y] = True
                     queue.append(y)
 
-    check = resetCheck(length)
+    check = resetCheck()
     BFS(start)
 
     return answer
@@ -83,12 +82,11 @@ def test_main():
     assert main() == {'DFS': [1000, 999], 'BFS': [1000, 999]}
 
 
-def formatter(answer: List[int]):
-    return ' '.join(map(str, answer))
-
-
 if __name__ == '__main__':
     answer = main()
+
+    def formatter(answer: List[int]):
+        return ' '.join(map(str, answer))
 
     print(formatter(answer['DFS']))
     print(formatter(answer['BFS']))
