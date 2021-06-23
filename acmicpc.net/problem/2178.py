@@ -1,29 +1,33 @@
-from collections import deque
-
 dx = [0, 0, -1, 1]
 dy = [-1, 1, 0, 0]
 
 
 def go(maze: list):
-    n_lenght = len(maze) - 1
-    m_lenght = len(maze[0]) - 1
+    n_length = len(maze)
+    m_length = len(maze[0])
+    n_max_index = n_length - 1
+    m_max_index = m_length - 1
 
-    mark = [[False]*(m_lenght+1) for _ in range(n_lenght+1)]
-    dist = [[0]*(m_lenght+1) for _ in range(n_lenght+1)]
+    mark = [[False]*m_length for _ in range(n_length)]
+    dist = [[0]*m_length for _ in range(n_length)]
 
-    q = deque()
-    q.append((0, 0))
+    queue = [(0, 0)]
     dist[0][0] = 1
-    while q:
-        x, y = q.popleft()
+
+    while queue:
+        x, y = queue.pop(0)
         for i in range(4):
             nx, ny = x+dx[i], y+dy[i]
-            if 0 <= nx <= n_lenght and 0 <= ny <= m_lenght:
-                if mark[nx][ny] == False and maze[nx][ny] == 1:
-                    q.append((nx, ny))
-                    dist[nx][ny] = dist[x][y] + 1
-                    mark[nx][ny] = True
-    return dist[n_lenght][m_lenght]
+
+            in_range = 0 <= nx <= n_max_index and 0 <= ny <= m_max_index
+            can_go_forward = in_range and mark[nx][ny] == False and maze[nx][ny] == 1
+
+            if can_go_forward:
+                queue.append((nx, ny))
+                dist[nx][ny] = dist[x][y] + 1
+                mark[nx][ny] = True
+
+    return dist[n_max_index][m_max_index]
 
 
 def test_go():
@@ -55,6 +59,6 @@ def test_go():
 
 if __name__ == "__main__":
     n, m = map(int, input().split())
-    maze = [list(map(int, list(input()))) for _ in range(n)]
+    maze = [list(map(int, input().split())) for _ in range(n)]
 
     print(go(maze))
