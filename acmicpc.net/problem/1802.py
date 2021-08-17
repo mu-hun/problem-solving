@@ -1,6 +1,3 @@
-from typing import List
-
-
 def check(paper: str, mid: int):
     for index in range(mid):
         if paper[index] == paper[mid * 2 - index]:
