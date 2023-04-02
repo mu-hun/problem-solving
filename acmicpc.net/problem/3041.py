@@ -1,14 +1,13 @@
-def solve_puzzle(mixed: list[list[str]]):
+def solve_puzzle(mixed: str):
     answer = 0
 
-    for column_index in range(len(mixed)):
-        for row_index in range(len(mixed[column_index])):
+    for index, letter in enumerate(mixed):
+        column_index = index // 4
+        row_index = index % 4
 
-            letter = mixed[column_index][row_index]
-
-            if letter != '.' and solved_map[letter] != (column_index, row_index):
-                answer += calculate_diff_count(letter,
-                                               (column_index, row_index))
+        if letter != '.' and solved_map[letter] != (column_index, row_index):
+            answer += calculate_diff_count(letter,
+                                           (column_index, row_index))
 
     return answer
 
@@ -34,9 +33,9 @@ def test_calculate_diff_count():
 
 
 def test_cases():
-    assert solve_puzzle(['ABCD', 'EFGH', 'IJKL', 'M.NO']) == 2
-    assert solve_puzzle(['.BCD', 'EAGH', 'IJFL', 'MNOK']) == 6
+    assert solve_puzzle('ABCDEFGHIJKLM.NO') == 2
+    assert solve_puzzle('.BCDEAGHIJFLMNOK') == 6
 
 
 if __name__ == '__main__':
-    print(solve_puzzle([input() for __ in range(4)]))
+    print(solve_puzzle(''.join((input() for __ in range(4)))))
