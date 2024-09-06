@@ -2,15 +2,13 @@ def is_seq(n: int):
     if n < 10:
         return 1
 
-    SN = list(map(int, list(str(n))))
-    L = [SN[0]]
+    SN = tuple(map(int, str(n)))
 
-    S = n % 10 - (n//10) % 10
+    # ex) 1234 % 10 = 4, (1234 // 10) % 10 = 3
+    S = n % 10 - (n // 10) % 10
 
-    for i in SN[1:]:
-        if i == L[-1] + S:
-            L.append(i)
-        else:
+    for index in range(len(SN) - 1):
+        if SN[index + 1] - SN[index] != S:
             return 0
     return 1
 
@@ -23,6 +21,6 @@ def test_is_seq():
 
 if __name__ == "__main__":
     ns = 0
-    for i in range(1, int(input())+1):
+    for i in range(1, int(input()) + 1):
         ns += is_seq(i)
     print(ns)
