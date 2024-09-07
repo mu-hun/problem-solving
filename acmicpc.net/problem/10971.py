@@ -6,11 +6,14 @@ def main(graph: tuple[tuple[int]]):
     minimum = inf
     length = len(graph)
 
-    for permutation in permutations(range(length)):
-        permutation += (permutation[0],)
+    indexes = range(length)
+
+    for permutation in permutations(indexes[1:]):
+        permutation = (0,) + permutation + (0,)
         total_weight = 0
 
-        for index in range(length):
+        # range(len(permutation) - 1) = range(length)
+        for index in indexes:
             weight = graph[permutation[index]][permutation[index + 1]]
             if weight == 0:
                 total_weight = inf
