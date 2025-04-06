@@ -12,26 +12,18 @@ def get_permutation(n: int) -> tuple[item_type, ...]:
         return tuple(memo_permutations[n - 1])
 
     for index in range(len(memo_permutations), n):
-        previous_items = memo_permutations[index - 1]
+        current_permutation: list[item_type] = []
 
-        current_items: list[item_type] = []
+        for perm in memo_permutations[index - 1]:
+            current_permutation.append((*perm, 1))
 
-        for previous_item in previous_items:
-            a = (*previous_item, 1)
+        for perm in memo_permutations[index - 2]:
+            current_permutation.append((*perm, 2))
 
-            last_item = previous_item[-1]
-            shifted = previous_item[:-1]
+        for perm in memo_permutations[index - 3]:
+            current_permutation.append((*perm, 3))
 
-            b = (
-                (*(shifted if len(shifted) > 0 else (1,)), last_item)
-                if last_item + 1 > 3
-                else (*shifted, last_item + 1)
-            )
-
-            current_items.append(a)
-            current_items.append(b)
-
-        memo_permutations.append(tuple(current_items))
+        memo_permutations.append(tuple(current_permutation))
 
     return tuple(
         sorted(set(memo_permutations[-1]), key=lambda iter: "".join(map(str, iter)))
